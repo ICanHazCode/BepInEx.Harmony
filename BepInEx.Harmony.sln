@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BepInEx.Harmony", "BepInEx.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Submodules", "Submodules", "{A768CF36-D16C-46AB-B398-55B7942384B9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harmony", "submodules\Harmony\Harmony\Harmony.csproj", "{5ACFB29B-8FC4-4DE4-A8DD-A1C460CCB81F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HarmonyX", "submodules\HarmonyX\Harmony\Harmony.csproj", "{5ACFB29B-8FC4-4DE4-A8DD-A1C460CCB81F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BepInEx.Harmony.Tests", "BepInEx.Harmony.Tests\BepInEx.Harmony.Tests.csproj", "{16F08747-D5B4-4B61-B29B-99489E361A43}"
 EndProject

@@ -47,9 +47,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\submodules\Harmony\Harmony\Harmony.csproj">
+    <ProjectReference Include="..\submodules\HarmonyX\Harmony\Harmony.csproj">
       <Project>{5acfb29b-8fc4-4de4-a8dd-a1c460ccb81f}</Project>
-      <Name>Harmony</Name>
+      <Name>HarmonyX</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
