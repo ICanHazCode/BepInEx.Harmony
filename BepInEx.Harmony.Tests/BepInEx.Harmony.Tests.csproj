@@ -61,7 +61,7 @@
       <Project>{54161CFE-FF42-4DDE-B161-3A49545DB5CD}</Project>
       <Name>BepInEx.Harmony</Name>
     </ProjectReference>
-    <ProjectReference Include="..\submodules\Harmony\Harmony\Harmony.csproj">
+    <ProjectReference Include="..\submodules\HarmonyX\Harmony\Harmony.csproj">
       <Project>{5ACFB29B-8FC4-4DE4-A8DD-A1C460CCB81F}</Project>
       <Name>Harmony</Name>
     </ProjectReference>

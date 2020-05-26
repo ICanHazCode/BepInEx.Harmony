@@ -77,7 +77,11 @@ namespace BepInEx.Harmony
 						originalMethods.Add(originalMethod);
 					}
 
-					var processor = new PatchProcessor(instance, originalMethods, prefix, postfix, transpiler);
+					var processor = new PatchProcessor(instance)
+											.SetOriginals(originalMethods)
+											.AddPrefix(prefix)
+											.AddPostfix(postfix)
+											.AddTranspiler(transpiler);
 					processor.Patch();
 				}
 			});
