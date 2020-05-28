@@ -1,8 +1,8 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using HarmonyLib;
 
 namespace BepInEx.Harmony
 {
@@ -18,20 +18,20 @@ namespace BepInEx.Harmony
 		/// <param name="harmonyInstance">The HarmonyInstance to use.</param>
 		public static HarmonyLib.Harmony PatchAll(Type type, HarmonyLib.Harmony harmonyInstance = null)
 		{
-			var instance = harmonyInstance ?? new HarmonyLib.Harmony($"harmonywrapper-auto-{Guid.NewGuid()}");
+			HarmonyLib.Harmony instance = harmonyInstance ?? new HarmonyLib.Harmony($"harmonywrapper-auto-{Guid.NewGuid()}");
 
 			type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).Do(method =>
 			{
-				var patchAttributeMethods = HarmonyMethodExtensions.GetFromMethod(method);
+				List<HarmonyMethod> patchAttributeMethods = HarmonyMethodExtensions.GetFromMethod(method);
 				if (patchAttributeMethods != null && patchAttributeMethods.Any())
 				{
-					var attributes = method.GetCustomAttributes(true);
+					object[] attributes = method.GetCustomAttributes(true);
 
-					var combinedInfo = HarmonyMethod.Merge(patchAttributeMethods);
+					HarmonyMethod combinedInfo = HarmonyMethod.Merge(patchAttributeMethods);
 
 					if (attributes.Any(x => x is ParameterByRefAttribute))
 					{
-						var byRefAttribute = (ParameterByRefAttribute)attributes.First(x => x is ParameterByRefAttribute);
+						ParameterByRefAttribute byRefAttribute = (ParameterByRefAttribute)attributes.First(x => x is ParameterByRefAttribute);
 
 						foreach (int index in byRefAttribute.ParameterIndices)
 						{
@@ -60,12 +60,12 @@ namespace BepInEx.Harmony
 
 					List<MethodBase> originalMethods = new List<MethodBase>();
 
-					foreach (var methodToPatch in completeMethods)
+					foreach (HarmonyMethod methodToPatch in completeMethods)
 					{
 						if (!methodToPatch.methodType.HasValue)
 							methodToPatch.methodType = MethodType.Normal;
 
-						var originalMethod = GetOriginalMethod(methodToPatch);
+						MethodBase originalMethod = GetOriginalMethod(methodToPatch);
 
 						if (originalMethod == null)
 							throw new ArgumentException($"Null method for attribute: \n" +
@@ -77,7 +77,7 @@ namespace BepInEx.Harmony
 						originalMethods.Add(originalMethod);
 					}
 
-					var processor = new PatchProcessor(instance)
+					PatchProcessor processor = new PatchProcessor(instance)
 											.SetOriginals(originalMethods)
 											.AddPrefix(prefix)
 											.AddPostfix(postfix)
@@ -96,7 +96,9 @@ namespace BepInEx.Harmony
 		/// <param name="type">The type to scan.</param>
 		/// <param name="harmonyInstanceId">The ID for the Harmony instance to create, which will be used.</param>
 		public static HarmonyLib.Harmony PatchAll(Type type, string harmonyInstanceId)
-			=> PatchAll(type, new HarmonyLib.Harmony(harmonyInstanceId));
+		{
+			return PatchAll(type, new HarmonyLib.Harmony(harmonyInstanceId));
+		}
 
 
 		/// <summary>
@@ -106,9 +108,9 @@ namespace BepInEx.Harmony
 		/// <param name="harmonyInstance">The HarmonyInstance to use.</param>
 		public static HarmonyLib.Harmony PatchAll(Assembly assembly, HarmonyLib.Harmony harmonyInstance = null)
 		{
-			var instance = harmonyInstance ?? new HarmonyLib.Harmony($"harmonywrapper-auto-{Guid.NewGuid()}");
+			HarmonyLib.Harmony instance = harmonyInstance ?? new HarmonyLib.Harmony($"harmonywrapper-auto-{Guid.NewGuid()}");
 
-			foreach (var type in assembly.GetTypes())
+			foreach (Type type in assembly.GetTypes())
 				PatchAll(type, instance);
 
 			return instance;
@@ -121,7 +123,9 @@ namespace BepInEx.Harmony
 		/// <param name="assembly">The assembly to scan.</param>
 		/// <param name="harmonyInstanceId">The ID for the Harmony instance to create, which will be used.</param>
 		public static HarmonyLib.Harmony PatchAll(Assembly assembly, string harmonyInstanceId)
-			=> PatchAll(assembly, new HarmonyLib.Harmony(harmonyInstanceId));
+		{
+			return PatchAll(assembly, new HarmonyLib.Harmony(harmonyInstanceId));
+		}
 
 
 		/// <summary>
@@ -129,7 +133,9 @@ namespace BepInEx.Harmony
 		/// </summary>
 		/// <param name="harmonyInstance">The Harmony instance to use.</param>
 		public static HarmonyLib.Harmony PatchAll(HarmonyLib.Harmony harmonyInstance = null)
-			=> PatchAll(Assembly.GetCallingAssembly(), harmonyInstance);
+		{
+			return PatchAll(Assembly.GetCallingAssembly(), harmonyInstance);
+		}
 
 
 		/// <summary>
@@ -137,9 +143,10 @@ namespace BepInEx.Harmony
 		/// </summary>
 		/// <param name="harmonyInstanceId">The ID for the Harmony instance to create, which will be used.</param>
 		public static HarmonyLib.Harmony PatchAll(string harmonyInstanceId)
-			=> PatchAll(Assembly.GetCallingAssembly(), harmonyInstanceId);
+		{
+			return PatchAll(Assembly.GetCallingAssembly(), harmonyInstanceId);
+		}
 
-		
 		private static MethodBase GetOriginalMethod(HarmonyMethod attribute)
 		{
 			if (attribute.declaringType == null)
@@ -172,11 +179,11 @@ namespace BepInEx.Harmony
 									  	{
 									  		return false;
 									  	}
-									  	var parameters = c.GetParameters();
+									  	ParameterInfo[] parameters = c.GetParameters();
 									  	if (attribute.argumentTypes == null && parameters.Length == 0)
-										{
-											return true;
-										}
+										  {
+											  return true;
+										  }
 									  	return parameters
 									  		.Select((p) => p.ParameterType)
 									  		.SequenceEqual(attribute.argumentTypes);

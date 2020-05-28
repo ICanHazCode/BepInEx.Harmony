@@ -7,7 +7,7 @@
 		internal static void TestStaticMethod()
 		{
 			int i = int.MaxValue;
-			var b = i.CompareTo(i);
+			int b = i.CompareTo(i);
 		}
 	}
 }

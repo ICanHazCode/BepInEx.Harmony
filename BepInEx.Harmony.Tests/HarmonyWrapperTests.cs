@@ -1,8 +1,8 @@
-﻿using System;
+﻿using HarmonyLib;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using HarmonyLib;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BepInEx.Harmony.Tests
 {
@@ -12,7 +12,7 @@ namespace BepInEx.Harmony.Tests
 		[TestMethod]
 		public void EmitDelegateTest()
 		{
-			var instruction = HarmonyWrapper.EmitDelegate<Action>(StaticAssets.TestStaticMethod);
+			CodeInstruction instruction = HarmonyWrapper.EmitDelegate<Action>(StaticAssets.TestStaticMethod);
 
 			Assert.AreEqual(OpCodes.Call, instruction.opcode);
 			Assert.IsTrue(instruction.operand is MethodInfo);
@@ -38,7 +38,9 @@ namespace BepInEx.Harmony.Tests
 			Assert.AreEqual(15, dummy);
 		}
 
-		private static Action CompileInstruction(CodeInstruction instruction) =>
-			(Action)((DynamicMethod)instruction.operand).CreateDelegate(typeof(Action));
+		private static Action CompileInstruction(CodeInstruction instruction)
+		{
+			return (Action)((DynamicMethod)instruction.operand).CreateDelegate(typeof(Action));
+		}
 	}
 }

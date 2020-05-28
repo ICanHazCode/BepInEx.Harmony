@@ -1,8 +1,8 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
-using HarmonyLib;
 
 namespace BepInEx.Harmony
 {
@@ -24,15 +24,15 @@ namespace BepInEx.Harmony
 				return new CodeInstruction(OpCodes.Call, action.Method);
 			}
 
-			var paramTypes = action.Method.GetParameters().Select(x => x.ParameterType).ToArray();
+			Type[] paramTypes = action.Method.GetParameters().Select(x => x.ParameterType).ToArray();
 
-			var dynamicMethod = new DynamicMethod(action.Method.Name,
+			DynamicMethod dynamicMethod = new DynamicMethod(action.Method.Name,
 				action.Method.ReturnType,
 				paramTypes,
 				typeof(HarmonyWrapper).Module,
 				true);
 
-			var il = dynamicMethod.GetILGenerator();
+			ILGenerator il = dynamicMethod.GetILGenerator();
 
 			Type targetType = action.Target.GetType();
 
@@ -44,9 +44,9 @@ namespace BepInEx.Harmony
 
 				DelegateCache[currentDelegateCounter] = action;
 
-				var cacheField = AccessTools.Field(typeof(HarmonyWrapper), nameof(DelegateCache));
+				System.Reflection.FieldInfo cacheField = AccessTools.Field(typeof(HarmonyWrapper), nameof(DelegateCache));
 
-				var getMethod = AccessTools.Method(typeof(Dictionary<int, Delegate>), "get_Item");
+				System.Reflection.MethodInfo getMethod = AccessTools.Method(typeof(Dictionary<int, Delegate>), "get_Item");
 
 				il.Emit(OpCodes.Ldsfld, cacheField);
 				il.Emit(OpCodes.Ldc_I4, currentDelegateCounter);
